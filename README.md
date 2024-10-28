@@ -23,6 +23,9 @@ Below are some of the main objects and components used in the project:
 - **PyQt5**: *Library for building graphical user interfaces.*
 - **QSS**: *For interface styling.*
 
+
+## Images
+ ![Calculator](images/calculator.png)
 ## Contribution
 Contributions are welcome! Feel free to open an issue or submit a pull request with improvements and fixes.
 
