@@ -25,7 +25,7 @@ Below are some of the main objects and components used in the project:
 
 
 ## Images
- ![Calculator](images/calculator.png)
+ [![Calculator](images/calculator.png)](https://github.com/Adriano085/Desktop_projects/blob/main/Calculator/calculator.py)
 ## Contribution
 Contributions are welcome! Feel free to open an issue or submit a pull request with improvements and fixes.
 
