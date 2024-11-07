@@ -4,6 +4,7 @@ Python is a versatile and powerful language that offers several development poss
 ## Projects
 Below are some projects already developed
 - **Calculator**: A simple calculator can perform basic calculations, such as addition, subtraction, multiplication, and division, clear the screen, and delete the last digit. If an error occurs, a window will be displayed informing the reason for the error.
+- **ImageEditor**: In Development
 
 ## Objects Used
 Below are some of the main objects and components used in the project:
