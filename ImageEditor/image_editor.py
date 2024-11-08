@@ -98,5 +98,3 @@ class ImageEditor:
 
     def editor_load_image(self, text: str):
         self.editor.apply_filter(text)
-
-    
