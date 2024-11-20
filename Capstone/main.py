@@ -1,3 +1,4 @@
+import sys
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
@@ -8,56 +9,140 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QTableWidget,
     QVBoxLayout,
-    QHBoxLayout
+    QHBoxLayout,
+    QMessageBox,
+    QTableWidgetItem,
 )
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery
+from PyQt5.QtCore import QDate
+
 
 class ExpenseApp(QWidget):
-  def __init__(self):
-    super().__init__()
-    self.resize(550,500)
-    self.setWindowTitle("Expense Tracker 2.0")
+    def __init__(self):
+        super().__init__()
+        self.resize(550, 500)
+        self.setWindowTitle("Expense Tracker 2.0")
 
-    self.date_box = QDateEdit()
-    self.dropdown = QComboBox()
-    self.description = QLineEdit()
-    self.amount = QLineEdit()
+        self.date_box = QDateEdit()
+        self.dropdown = QComboBox()
+        self.description = QLineEdit()
+        self.amount = QLineEdit()
 
-    self.add_btn = QPushButton("Add Expense")
-    self.delete_btn = QPushButton("Delete")
+        self.add_btn = QPushButton("Add Expense")
+        self.add_btn.clicked.connect(self.add_expense)
 
-    self.table = QTableWidget()
-    self.table.setColumnCount(5)
-    self.table.setHorizontalHeaderLabels(['Id', 'Date', 'Category', 'Amount', 'Description'])
+        self.delete_btn = QPushButton("Delete")
+        # self.delete_btn.clicked.connect(self.delete_expense)
 
-    self.master_layout = QVBoxLayout()
-    self.row1 = QHBoxLayout()
-    self.row2 = QHBoxLayout()
-    self.row3 = QHBoxLayout()
+        self.table = QTableWidget()
+        self.table.setColumnCount(5)
+        self.table.setHorizontalHeaderLabels(
+            ["Id", "Date", "Category", "Amount", "Description"]
+        )
 
-    self.row1.addWidget(QLabel("Date:"))
-    self.row1.addWidget(self.date_box)
-    self.row1.addWidget(QLabel("Category:"))
-    self.row1.addWidget(self.dropdown)
+        self.dropdown.addItems(
+            ["Food", "Transport", "Rent", "Shopping", "Entertainment", "Bills", "Other"]
+        )
 
-    self.row2.addWidget(QLabel("Amount:"))
-    self.row2.addWidget(self.amount)
-    self.row2.addWidget(QLabel("Description:"))
-    self.row2.addWidget(self.description)
+        self.master_layout = QVBoxLayout()
+        self.row1 = QHBoxLayout()
+        self.row2 = QHBoxLayout()
+        self.row3 = QHBoxLayout()
 
-    self.row3.addWidget(self.add_btn)
-    self.row3.addWidget(self.delete_btn)
+        self.row1.addWidget(QLabel("Date:"))
+        self.row1.addWidget(self.date_box)
+        self.row1.addWidget(QLabel("Category:"))
+        self.row1.addWidget(self.dropdown)
 
-    self.master_layout.addLayout(self.row1)
-    self.master_layout.addLayout(self.row2)
-    self.master_layout.addLayout(self.row3)
+        self.row2.addWidget(QLabel("Amount:"))
+        self.row2.addWidget(self.amount)
+        self.row2.addWidget(QLabel("Description:"))
+        self.row2.addWidget(self.description)
 
-    self.master_layout.addWidget(self.table)
+        self.row3.addWidget(self.add_btn)
+        self.row3.addWidget(self.delete_btn)
 
-    self.setLayout(self.master_layout)
+        self.master_layout.addLayout(self.row1)
+        self.master_layout.addLayout(self.row2)
+        self.master_layout.addLayout(self.row3)
+
+        self.master_layout.addWidget(self.table)
+
+        self.setLayout(self.master_layout)
+
+    def load_table(self):
+        self.table.setRowCount(0)
+        query = QSqlQuery("SELECT * FROM expenses")
+        row = 0
+        while query.next():
+            expensive_id = query.value(0)
+            date = query.value(1)
+            category = query.value(2)
+            amount = query.value(3)
+            description = query.value(4)
+
+            # Add Values to Table
+            self.table.insertRow(row)
+            self.table.setItem(row, 0, QTableWidgetItem(str(expensive_id)))
+            self.table.setItem(row, 1, QTableWidgetItem(date))
+            self.table.setItem(row, 2, QTableWidgetItem(category))
+            self.table.setItem(row, 3, QTableWidgetItem(str(amount)))
+            self.table.setItem(row, 4, QTableWidgetItem(description))
+
+            row += 1
+
+    def add_expense(self):
+        date = self.date_box.date().toString("yyyy-MM-dd")
+        category = self.dropdown.currentText()
+        amount = self.amount.text()
+        description = self.description.text()
+
+        query = QSqlQuery()
+        query.prepare(
+            "INSERT INTO expenses (date, category, amount, description) VALUES (?, ?, ?, ?)"
+        )
+        query.addBindValue(date)
+        query.addBindValue(category)
+        query.addBindValue(amount)
+        query.addBindValue(description)
+        query.exec_()
+
+        self.date_box.setDate(QDate.currentDate())
+        self.dropdown.setCurrentIndex(0)
+        self.amount.clear()
+        self.description.clear()
+
+        self.load_table()
+
+
+# Create Database
+database = QSqlDatabase.addDatabase("QSQLITE")
+database.setDatabaseName("expenses.db")
+
+if not database.open():
+    QMessageBox.critical(
+        None,
+        "Database Error",
+        "Could not open your database.",
+        QMessageBox.Cancel,
+    )
+    sys.exit(1)
+
+query = QSqlQuery()
+query.exec_(
+    """
+      CREATE TABLE IF NOT EXISTS expenses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        date TEXT, 
+        category TEXT, 
+        amount REAL,
+        description TEXT)
+    """
+)
 
 
 if __name__ == "__main__":
-  app = QApplication([])
-  window = ExpenseApp()
-  window.show()
-  app.exec_()
+    app = QApplication([])
+    window = ExpenseApp()
+    window.show()
+    app.exec_()
