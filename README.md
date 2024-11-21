@@ -4,7 +4,7 @@ Python is a versatile and powerful language that offers several development poss
 ## Projects
 Below are some projects already developed
 - **Calculator**: A simple calculator can perform basic calculations, such as addition, subtraction, multiplication, and division, clear the screen, and delete the last digit. If an error occurs, a window will be displayed informing the reason for the error.
-- **ImageEditor**: In Development
+- **ImageEditor**: This app allows you to upload a picture and perform simple edits, such as rotating the image to the right or left, mirroring it, converting it to grayscale, applying blur, adjusting contrast, sharpening, and more.
 
 ## Objects Used
 Below are some of the main objects and components used in the project:
@@ -27,6 +27,7 @@ Below are some of the main objects and components used in the project:
 
 ## Images
  [![Calculator](images/calculator.png)](https://github.com/Adriano085/Desktop_projects/blob/main/Calculator/calculator.py)
+ [![Image Editor](images/image_editor.png)](https://github.com/Adriano085/Desktop_projects/blob/main/ImageEditor)
 ## Contribution
 Contributions are welcome! Feel free to open an issue or submit a pull request with improvements and fixes.
 
